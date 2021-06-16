@@ -12,10 +12,11 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
-    "mongoose": "^5.12.13",
+    "mysql2": "^2.2.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "^4.0.3",
+    "sequelize": "^6.6.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
@@ -41,5 +42,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
   }
 }
