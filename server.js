@@ -1,11 +1,14 @@
 
 const express = require('express');
 const path = require('path');
+var cors = require('cors');
 
 
 const authorize = require('./Server/helpers/authorize')
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'build')));
 

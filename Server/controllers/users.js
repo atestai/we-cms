@@ -44,9 +44,7 @@ const User = {
                     } 
                 });
 
-                res.json({
-                    user
-                }); 
+                res.json(user); 
             }
             else {
                 
@@ -58,9 +56,7 @@ const User = {
                         } 
                     });
     
-                    res.json({
-                        user
-                    }); 
+                    res.json(user); 
                 }
                 else{
                     res.status(401).send();
@@ -148,12 +144,8 @@ const User = {
                         }
                     }
                   
-                    const updated = await UserModel.update(req.body, filter);
-
-                    res.json({
-                        updated
-                    }); 
-
+                    await UserModel.update(req.body, filter);
+                    res.status(204).send(); 
                  
 
                 } catch (error) {
@@ -192,9 +184,7 @@ const User = {
                     const save = { ...req.body, password : sha1(req.body.password || 'pass' ) }
                     const user = await UserModel.create(save);
 
-                    res.json({
-                        user
-                    });
+                    res.json(user);
 
                 } catch (error) {
                     res.status(422).json(error.errors) 

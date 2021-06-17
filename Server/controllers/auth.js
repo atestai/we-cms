@@ -66,12 +66,17 @@ const User = {
         else{
             res.status(401).send();
         }
+    },
+
+    userByToken(req, res){
+        const user = req.user;
+        res.json(user);
     }
 }
 
 
 router.post('/access_token', User.getToken );
 router.post('/access_token/refresh', authorize,  User.refreshToken );
-
+router.get('/user_by_token', authorize,  User.userByToken );
 
 module.exports = router;
