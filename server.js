@@ -1,7 +1,7 @@
 
 const express = require('express');
 const path = require('path');
-var cors = require('cors');
+const cors = require('cors');
 
 
 const authorize = require('./Server/helpers/authorize')
