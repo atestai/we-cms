@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-import {BrowserRouter} from 'react-router-dom'; 
+import {BrowserRouter as Router} from 'react-router-dom'; 
+
+
 
 import SignIn from './components/SignIn';
 import Dashboard from './components/dashboard/Dashboard';
@@ -28,7 +30,6 @@ class App extends Component {
 		const localToken = localStorage.getItem("token");
 
 		this.wait = localToken ? true : false;
-
 
 	}
 
@@ -117,10 +118,14 @@ class App extends Component {
 		}
 	}
 
-	onExitToApp = () => {
+	onExitToApp = e => {
+
+		//this.props.history.push("/about");
 
 		localStorage.clear();
 		this.setState(defaultState);
+
+		window.location.href = '/';
 	}
 
 
@@ -131,14 +136,14 @@ class App extends Component {
 		if (!this.wait){
 			if (this.state.user !== null) {
 				main = (
-					<BrowserRouter>
+					<Router>
 					<Dashboard
 						title={this.title}
 						onExitToApp={this.onExitToApp}
 						user={this.state.user}
 						token = {this.state.token}
 					/>
-					</BrowserRouter>	
+					</Router>	
 				);
 			} else {
 				main = (
@@ -152,7 +157,8 @@ class App extends Component {
 			}
 		}
 
-		return main;  
+		return main 
+		
 	}
 }
 

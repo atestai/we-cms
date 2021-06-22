@@ -4,7 +4,9 @@ const strings = new LocalizedStrings({
 
 	en: {
 	
-		add_element : 'Add new element', 	
+		add_element : 'Add new element', 
+
+		cancel : 'Cancel',
 
 		delete : 'Delete',
 		delete_question : 'Are you sure you want delete this element?',
@@ -19,7 +21,10 @@ const strings = new LocalizedStrings({
 
 		invalid_credentials: "Invalid credentials",
 
+		name : 'Name',
 		no : "No",
+
+		ok : 'Ok',
 		
 		patients : 'Patients',
 		
@@ -31,11 +36,15 @@ const strings = new LocalizedStrings({
 		
 		tests : 'Tests',
 
+		username : 'Username',
+
 		yes : "Yes"
 	},
 
 	it: {
 		add_element : 'Aggiuungi un nuovo elemento', 
+
+		cancel : 'Annulla',
 
 		delete : 'Cancella',
 		delete_question : 'Vuoi cancellare l\'elemento?',
@@ -51,7 +60,11 @@ const strings = new LocalizedStrings({
 
 		invalid_credentials: "Credenziali invalide",
 
+		name : 'Nome',
 		no : "No",
+		
+
+		ok : 'Ok',
 
 		patients : 'Pazienti',
 
@@ -61,6 +74,8 @@ const strings = new LocalizedStrings({
 		sign_in: "Accedi",
 
 		tests : 'Analisi',
+
+		username : 'Username',
 		
 		yes : "Si"
 	}

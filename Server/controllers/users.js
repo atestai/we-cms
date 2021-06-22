@@ -204,7 +204,56 @@ const User = {
         else{
             res.status(401).send();  
         }
-    }
+    },
+
+
+    async delete(req, res) {
+
+        console.log('user-delete');
+
+        if (req.user !== null){
+
+            //console.log(req.body);
+
+            if ( req.user.role_id === constants.PATIENT && req.params.id !== req.user.id.toString()){
+                res.status(401).send();  
+                return;
+            }
+
+            if ( req.user.role_id === constants.DOCTOR && req.params.id !== req.user.id.toString()){
+                
+                const count = await UserModel.count({
+                    where: { 
+                        id:req.params.id,
+                        doctor_id : req.user.id
+                    } 
+                });
+
+                if (count === 0){
+                    res.status(401).send();  
+                    return;
+                }
+            }
+
+
+            try {
+              
+                await UserModel.destroy({
+                    where: {
+                        id : req.params.id
+                    }
+                });
+                res.status(204).send(); 
+             
+
+            } catch (error) {
+                res.status(422).json(error.errors) 
+            }
+        }
+        else{
+            res.status(401).send();  
+        }
+    },
 }
 
 
@@ -215,7 +264,7 @@ router.get('/:id/patients', User.getPatients);
 router.patch('/:id', User.update);
 router.post('/', User.create);
 
-//router.delete('/:id', User.delete);
+router.delete('/:id', User.delete);
 
 
 module.exports = router;

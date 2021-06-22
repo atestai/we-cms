@@ -192,6 +192,9 @@ class Dashboard extends Component {
 						</IconButton>
 
 						<ConfirmDialog
+
+							
+
 							title={lang.exit_to_app}
 							open={this.state.confirm_open}
 							setOpen={this.onConfirmOpen}

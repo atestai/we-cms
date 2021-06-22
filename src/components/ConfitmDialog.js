@@ -12,6 +12,8 @@ const ConfirmDialog = (props) => {
 
 	return (
 		<Dialog
+			disableBackdropClick
+			disableEscapeKeyDown
 			open={open}
 			onClose={() => setOpen(false)}
 			aria-labelledby="confirm-dialog"
