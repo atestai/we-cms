@@ -12,24 +12,28 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 
 export const mainListItems = (
   <div>
+    
     <ListItem button>
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItem>
+
     <ListItem button>
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
       <ListItemText primary="Orders" />
     </ListItem>
+    
     <ListItem button>
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
       <ListItemText primary="Customers" />
     </ListItem>
+    
     <ListItem button>
       <ListItemIcon>
         <BarChartIcon />

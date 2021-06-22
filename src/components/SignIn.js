@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import {withStyles } from '@material-ui/core/styles';
+
+
+import {withStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import Snackbar from '@material-ui/core/Snackbar';
@@ -17,26 +18,11 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import serialize from 'form-serialize';
 
+import Copyright  from './Copyright';
+import lang from '../language'
 
-import os from 'os';
 
 
-function Copyright() {
-
-	let host = os.hostname();
-	console.log(host);
-
-	return (
-		<Typography variant="body2" color="textSecondary" align="center">
-			{'Copyright © '}
-			<Link color="inherit" href={host}>
-				{host}
-			</Link>{' '}
-			{new Date().getFullYear()}
-			{'.'}
-		</Typography>
-	);
-}
 
 const useStyles = theme => ({
 	paper: {
@@ -46,8 +32,11 @@ const useStyles = theme => ({
 		alignItems: 'center',
 	},
 	avatar: {
-		margin: theme.spacing(1),
-		backgroundColor: theme.palette.secondary.main,
+		margin: theme.spacing(2, 0, 5),
+		// width: theme.spacing(25),
+		// height: theme.spacing(25),
+
+		// backgroundColor: theme.palette.secondary.main,
 	},
 	form: {
 		width: '100%', // Fix IE 11 issue.
@@ -58,20 +47,14 @@ const useStyles = theme => ({
 	},
 });
 
-//console.log(useStyles);
 
 const Alert = props => {
 	return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 
-
 class SignIn extends Component {
 	
-	constructor(props) {
-		super(props);	
-		this.state = { utenteAutenticato: false };
-	}
 
 	onSubmitAction = e =>{
 		
@@ -80,41 +63,38 @@ class SignIn extends Component {
 		this.props.onSignInAction(data);
 	}
 
-
+	
 
 	render() {
 		const {classes} = this.props;
 
-
-		let alert = '';
+		let alert;
 
 		if (this.props.error !== null){
 			alert = (
-				<Snackbar open={true} autoHideDuration={2000} >
+				<Snackbar open="true" anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
 					<Alert severity="error">
-						This is a success message!
+						{lang.invalid_credentials}
 					</Alert>
-      			</Snackbar>
+				  </Snackbar>
 			)
 		}
 		
 
-			
-
-
 		return (
-
 
 			<Container component="main" maxWidth="xs">
 				{alert}
+
 				<CssBaseline />
 				<div className={classes.paper}>
-					<Avatar className={classes.avatar}>
-						<LockOutlinedIcon />
-					</Avatar>
-					<Typography component="h1" variant="h5">
+				
+					{/* <Avatar className={classes.avatar}  alt={this.props.title} src="/logo.png" /> */}
+					<img  alt={this.props.title} className={classes.avatar} src="/logo.png" /> 
+				
+					{/* <Typography component="h1" variant="h5">
 						{this.props.title}
-					</Typography>
+					</Typography> */}
 					<form onSubmit={this.onSubmitAction} className={classes.form}>
 						<TextField
 							variant="outlined"
@@ -149,12 +129,13 @@ class SignIn extends Component {
 							color="primary"
 							className={classes.submit}
 						>
-							Sign In
+								{lang.sign_in}
 						</Button>
+
 						<Grid container>
 							<Grid item xs>
 								<Link href="#" variant="body2">
-									Forgot password?
+									{lang.forgot_password}
 								</Link>
 							</Grid>
 							<Grid item>
@@ -165,7 +146,7 @@ class SignIn extends Component {
 				</div>
 
 				<Box mt={8}>
-					<Copyright />
+					<Copyright title={this.props.title} />
 				</Box>
 
 			</Container>

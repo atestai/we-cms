@@ -16,7 +16,13 @@ const User = {
 
         if (req.user !== null && req.user.role_id === constants.ADMIN){
          
-            const users = await UserModel.findAll({});
+            console.log(req.query);
+
+            const users = await UserModel.findAll({
+                where : {
+                    ...req.query
+                }
+            });
 
             res.json({
                 users

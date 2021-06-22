@@ -1,6 +1,7 @@
+import config from '../config.json';
 
-//const base_url = 'http://localhost:8080/api';
-const base_url = 'https://pku-smart-sensors.eu/api';
+
+const base_url = config.base_url;
 
 const post = async (url = '', data = {}, header = {}) => {
     // Default options are marked with *
@@ -47,7 +48,8 @@ const api = {
     urls : {
         base_url,
         token : base_url + '/auth/access_token',
-        users_by_token : base_url + '/auth/user_by_token'
+        users_by_token : base_url + '/auth/user_by_token',
+        doctors : base_url + '/users?role_id=2'
 
     },
 
@@ -55,7 +57,6 @@ const api = {
     get,
 
    // getToken : () => post( base_url + '/auth/access_token')
-
 
 }
 
