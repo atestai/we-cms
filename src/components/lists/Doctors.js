@@ -23,11 +23,17 @@ class Doctors extends Component {
     constructor(props){
         super(props);
 
+        if ( props.token === undefined){
+            window.location.href = '/';
+        }
+
+        this.user = {};
+
+
         this.columns = [
             { field: 'name', headerName: lang.name, flex: 0.33 },
             { field: 'username', headerName: lang.username, flex: 0.33 },
             { field: 'email', headerName: 'E-mail', flex: 0.33 },
-
             {
                 field: ' ',
                 resizable: false,
@@ -37,12 +43,11 @@ class Doctors extends Component {
                 width: 150,
                            
                 renderCell: (params) => (
-                  
                     <div >
                         <IconButton 
                             edge='start'  
                             title={lang.edit} 
-                            component={ Link } to={'/doctors/' +  params.id} variant="contained"> 
+                            onClick={ () => this.onEditAction(params.id) }> 
                                 <EditIcon style={{ color: 'green' }} /> 
                         </IconButton>
 
@@ -53,8 +58,7 @@ class Doctors extends Component {
                                 <DeleteIcon style={{ color: 'red' }} /> 
                         </IconButton>
                     </div>
-                   
-                  )
+                )
             },
         ];
 
@@ -68,6 +72,10 @@ class Doctors extends Component {
             detail_open : false,
             error_open : false
         };
+    }
+
+    componentDidMount = () => {
+        this.loadData();
     }
 
 
@@ -92,26 +100,27 @@ class Doctors extends Component {
     }
 
 
-    componentDidMount = () => {
-        this.loadData();
-    }
-
-
     onAddAction = e =>{
-        //console.log(e.target);
+        this.user = {};
         this.setState({ detail_open: true })
-
     }
 
 
-    onEditAction = id =>{
-        console.log(id);
+    onEditAction = async id =>{
+        //console.log(id);
+
+        const user = await Api.get(Api.urls.doctors + '/' + id, {}, {
+            'Authorization': 'Bearer ' + this.state.token
+        });
+
+        this.user = {...user};
+        this.setState({ detail_open: true})
+
     }
 
 
     onOpenDialog = ( open = true, id = null) =>{
 
-        //console.log(open);
         this.setState({ delete_confirm_open: open });
 
         if (open){
@@ -168,13 +177,23 @@ class Doctors extends Component {
         this.setState({ detail_open: false })
     }
 
-    insertElement = async (data) => {
+
+    onOKAction = async (data) => {
        
-        const user = await Api.post(Api.urls.doctors, data, {
-            'Authorization': 'Bearer ' + this.state.token
-        })
+        
+        let user = undefined;
 
+        if (data.id !== undefined){
+            console.log(data);
+            return;
+        }
+        else{
+            user = await Api.post(Api.urls.doctors, data, {
+                'Authorization': 'Bearer ' + this.state.token
+            })
+        }
 
+    
         if (user.error === undefined){
 
             this.setState({ detail_open: false })
@@ -185,7 +204,7 @@ class Doctors extends Component {
             //console.log(user.error);
             this.message = user.error;
             this.onErrorMessage(true);
-        }        
+        }     
     }
 
 
@@ -226,8 +245,8 @@ class Doctors extends Component {
                 <Doctor
                     open = {this.state.detail_open}
                     detailClose = {this.onDetailClose} 
-                    onOK = {this.insertElement}  
-
+                    onOK = {this.onOKAction}  
+                    user = {this.user}
                 />
 
                 <Snackbar

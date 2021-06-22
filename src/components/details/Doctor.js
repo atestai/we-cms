@@ -10,8 +10,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import serialize from 'form-serialize';
 
 import lang from '../../language';
+import { Input } from '@material-ui/core';
 
 class Doctor extends Component {
+
 
 
     onOKAction = e => {
@@ -33,6 +35,11 @@ class Doctor extends Component {
 
     render() {
 
+
+        const {id, name, username, email} = this.props.user;
+
+        const password_required = id === undefined ;
+
         return (
 
             <Dialog  
@@ -42,6 +49,7 @@ class Doctor extends Component {
                 <form onSubmit={this.onOKAction}>
 
                     <DialogTitle id="form-dialog-title">{lang.doctor}</DialogTitle>
+                    <Input name="id" value={id} type="hidden" />
 
                     <DialogContent>
 
@@ -54,6 +62,7 @@ class Doctor extends Component {
                             type="text"
                             fullWidth
                             required
+                            value = {name}
                         />
 
                         <TextField
@@ -64,6 +73,7 @@ class Doctor extends Component {
                             type="text"
                             fullWidth
                             required
+                            value = {username}
                         />
 
                         <TextField
@@ -73,7 +83,7 @@ class Doctor extends Component {
                             label="Password"
                             type="password"
                             fullWidth
-                            required
+                            required={password_required}
                         />
 
                         <TextField
@@ -83,6 +93,7 @@ class Doctor extends Component {
                             label="Email Address"
                             type="email"
                             fullWidth
+                            value = {email}
                         />
 
                     </DialogContent>
