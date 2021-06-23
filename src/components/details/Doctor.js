@@ -45,7 +45,11 @@ class Doctor extends Component {
             <Dialog  
                 disableBackdropClick
                 disableEscapeKeyDown
-                open={this.props.open} onClose={this.props.detailClose} aria-labelledby="form-dialog-title" maxWidth="sm" fullWidth >
+                open={this.props.open} 
+                onClose={this.props.detailClose} 
+                aria-labelledby="form-dialog-title" 
+                maxWidth="sm" fullWidth >
+
                 <form onSubmit={this.onOKAction}>
 
                     <DialogTitle id="form-dialog-title">{lang.doctor}</DialogTitle>
@@ -62,7 +66,7 @@ class Doctor extends Component {
                             type="text"
                             fullWidth
                             required
-                            value = {name}
+                            defaultValue = {name}
                         />
 
                         <TextField
@@ -73,7 +77,7 @@ class Doctor extends Component {
                             type="text"
                             fullWidth
                             required
-                            value = {username}
+                            defaultValue = {username}
                         />
 
                         <TextField
@@ -93,7 +97,7 @@ class Doctor extends Component {
                             label="Email Address"
                             type="email"
                             fullWidth
-                            value = {email}
+                            defaultValue = {email}
                         />
 
                     </DialogContent>
@@ -107,7 +111,6 @@ class Doctor extends Component {
                     </DialogActions>
                 </form>
             </Dialog>
-
         )
     }
 }

@@ -14,8 +14,7 @@ import { DataGrid } from '@material-ui/data-grid';
 
 //import { Link } from "react-router-dom";
 
-
-import lang from '../language';
+import lang from '../../language';
 
 
 

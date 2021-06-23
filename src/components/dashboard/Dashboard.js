@@ -21,8 +21,8 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { Route, Switch } from "react-router";
 
-import ConfirmDialog from '../ConfitmDialog';
-import Copyright from '../Copyright';
+import ConfirmDialog from '../helpers/ConfitmDialog';
+import Copyright from '../helpers/Copyright';
 import Menu from './Menu';
 
 import Home from './Home';

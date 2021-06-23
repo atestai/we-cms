@@ -19,7 +19,7 @@ const post = async (url = '', data = {}, header = {}) => {
         body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
 
-    return response.json(); // parses JSON response into native JavaScript objects
+    return response.status;
 }
 
 const patch = async (url = '', data = {}, header = {}) => {
@@ -38,7 +38,7 @@ const patch = async (url = '', data = {}, header = {}) => {
         body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
 
-    return response.json(); // parses JSON response into native JavaScript objects
+    return response.status;
 }
 
 const put = async (url = '', data = {}, header = {}) => {
@@ -57,7 +57,7 @@ const put = async (url = '', data = {}, header = {}) => {
         body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
 
-    return response.json(); // parses JSON response into native JavaScript objects
+    return response.status;
 }
 
 const get = async (url = '', data = {}, header = {}) => {

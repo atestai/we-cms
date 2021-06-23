@@ -18,7 +18,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import serialize from 'form-serialize';
 
-import Copyright  from './Copyright';
+import Copyright  from './helpers/Copyright';
 import lang from '../language'
 
 

@@ -1,16 +1,14 @@
 import React, { Component, Fragment } from 'react'
 
-import {  IconButton, Snackbar } from '@material-ui/core';
+import { IconButton, Snackbar } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
-import {Link } from "react-router-dom";
-
 import MuiAlert from '@material-ui/lab/Alert';
 
-import ConfirmDialog from '../ConfitmDialog';
-import DatagridPage from '../DatagridPage';
+import ConfirmDialog from '../helpers/ConfitmDialog';
+import DatagridPage from '../helpers/DatagridPage';
 import Doctor from '../details/Doctor';
 
 import lang from '../../language';
@@ -181,20 +179,23 @@ class Doctors extends Component {
     onOKAction = async (data) => {
        
         
-        let user = undefined;
+        let status = undefined;
 
         if (data.id !== undefined){
-            console.log(data);
-            return;
+            
+            //console.log(data);
+            //return;
+            status = await Api.patch(Api.urls.doctors +  '/' + data.id, data, {
+                'Authorization': 'Bearer ' + this.state.token
+            })
         }
         else{
-            user = await Api.post(Api.urls.doctors, data, {
+            status = await Api.post(Api.urls.doctors, data, {
                 'Authorization': 'Bearer ' + this.state.token
             })
         }
 
-    
-        if (user.error === undefined){
+        if (status === 204){
 
             this.setState({ detail_open: false })
             this.loadData();
@@ -202,7 +203,7 @@ class Doctors extends Component {
         }
         else{
             //console.log(user.error);
-            this.message = user.error;
+            this.message = status;
             this.onErrorMessage(true);
         }     
     }
