@@ -12,8 +12,13 @@ const strings = new LocalizedStrings({
 		delete_question : 'Are you sure you want delete this element?',
 		doctor : 'Doctor',
 		doctors : 'Doctors',
+
+
 		
 		edit : 'Edit',
+		errors :{
+			409 : 'Already used'
+		},
 		exit_to_app : "Exit to app",
 		exit_to_app_question : "Are you sure you want to exit?",
 
@@ -50,9 +55,14 @@ const strings = new LocalizedStrings({
 		delete_question : 'Vuoi cancellare l\'elemento?',
 		doctor : 'Dottore',
 		doctors : 'Dottori',
+
+		
 		
 
 		edit : 'Modifica',
+		errors :{
+			409 : 'Dato gia utilizzato'
+		},
 		exit_to_app : "Uscita dall'app",
 		exit_to_app_question : "Sei sicuro che vuoi uscire?",
 

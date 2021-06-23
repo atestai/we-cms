@@ -12,7 +12,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-//import { Link } from "react-router-dom";
+
+import ConfirmDialog from '../helpers/ConfitmDialog';
 
 import lang from '../../language';
 
@@ -81,6 +82,18 @@ const useStyles = theme => ({
 
 class DatagridPage extends Component {
 
+    constructor(props){
+
+        super(props);
+
+        this.state = {
+            delete_confirm_open : false
+        }
+    }
+
+    onConfirmDialog = ( open ) =>{
+        this.setState({ delete_confirm_open: open });
+    }
 
     render() {
 
@@ -123,9 +136,18 @@ class DatagridPage extends Component {
                             </IconButton>
 
 
-                            <IconButton color="inherit" title={lang.delete}>
+                            <IconButton onClick={ () => this.onConfirmDialog(true)} color="inherit" title={lang.delete}>
                                 <DeleteIcon />
                             </IconButton>
+
+                            <ConfirmDialog
+                                title={lang.delete}
+                                open={this.state.delete_confirm_open}
+                                setOpen={this.onConfirmDialog}
+                                onConfirm={this.props.onDelete}>
+                            
+                                {lang.delete_question}
+                            </ConfirmDialog>
 
                             <IconButton onClick={this.props.onReload} color="inherit" title={lang.refresh}>
                                 <RefreshIcon />
@@ -148,6 +170,8 @@ class DatagridPage extends Component {
                                 rowsPerPageOptions={[25]}
 
                                 pagination
+
+                                onSelectionModelChange = {this.props.onSelectionModelChange}
                                 
                                 />
                         </div>

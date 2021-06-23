@@ -12,7 +12,7 @@ import DatagridPage from '../helpers/DatagridPage';
 import Doctor from '../details/Doctor';
 
 import lang from '../../language';
-import Api from '../../helper/api'
+import Api from '../../helpers/api'
 
 
 
@@ -26,7 +26,7 @@ class Doctors extends Component {
         }
 
         this.user = {};
-
+        this.selectedRowData = [];
 
         this.columns = [
             { field: 'name', headerName: lang.name, flex: 0.33 },
@@ -105,15 +105,17 @@ class Doctors extends Component {
 
 
     onEditAction = async id =>{
-        //console.log(id);
-
         const user = await Api.get(Api.urls.doctors + '/' + id, {}, {
             'Authorization': 'Bearer ' + this.state.token
         });
 
-        this.user = {...user};
-        this.setState({ detail_open: true})
-
+        if (user !== undefined && user.name === 'TokenExpiredError'){
+            window.location.href = '/';
+        }
+        else if (user){
+            this.user = {...user};
+            this.setState({ detail_open: true})
+        }
     }
 
 
@@ -129,7 +131,7 @@ class Doctors extends Component {
 
     onDeleteAction = async () =>{
 
-        console.log("delete" +  this.id_to_delete);
+        //console.log("delete" +  this.id_to_delete);
 
         let id = this.id_to_delete;
 
@@ -159,15 +161,47 @@ class Doctors extends Component {
         const text = e.target.value;
 
         if (!text.length || text.length >= 3 ){
+
+            const regExp = new RegExp(text, 'i');
+            const fields = this.columns.map( e => e.field.trim() );
+
             this.setState({
-                rows: this.rows.filter( item => new RegExp(text, 'i').test(item.name) || new RegExp(text, 'i').test(item.email) )    
+                rows: this.rows.filter( item => {
+
+                    for (const field of fields) {   
+                        if (Object.hasOwnProperty.call(item, field) && regExp.test(item[field])) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                    
             });
         }
     }
 
 
-    onMultiDeleteAction = ids =>{
-        console.log(ids);
+    onMultiDeleteAction = async () =>{
+        
+        console.log("selected rowData:", this.selectedRowData);
+        
+        let refresh = false;
+
+        for (const item of  this.selectedRowData) {
+            const status = await Api.del(Api.urls.doctors + '/' + item.id , {
+                'Authorization': 'Bearer ' + this.state.token
+            });
+
+            if (status)
+                refresh = status;
+        }
+
+        if (refresh){
+            this.loadData();
+        }
+
+        
+
     }
 
 
@@ -178,13 +212,9 @@ class Doctors extends Component {
 
     onOKAction = async (data) => {
        
-        
         let status = undefined;
 
         if (data.id !== undefined){
-            
-            //console.log(data);
-            //return;
             status = await Api.patch(Api.urls.doctors +  '/' + data.id, data, {
                 'Authorization': 'Bearer ' + this.state.token
             })
@@ -195,15 +225,14 @@ class Doctors extends Component {
             })
         }
 
-        if (status === 204){
+        if (status === 204 || status === 200 ){
 
             this.setState({ detail_open: false })
             this.loadData();
 
         }
         else{
-            //console.log(user.error);
-            this.message = status;
+            this.message = lang.errors[status];
             this.onErrorMessage(true);
         }     
     }
@@ -211,6 +240,17 @@ class Doctors extends Component {
 
     onErrorMessage = (error_open = true) => {
         this.setState({ error_open })
+    }
+
+
+    onSelectionModelChange = (e) => {
+        const selectedIDs = new Set(e.selectionModel);
+
+        this.selectedRowData = this.rows.filter((row) =>
+          selectedIDs.has(row.id)
+        );
+
+        // console.log("selected rowData:", this.selectedRowData);
     }
 
 
@@ -230,6 +270,9 @@ class Doctors extends Component {
                     onSearch = {this.onSearchAction}
                     onDelete = {this.onMultiDeleteAction}
                     onReload = {this.loadData}
+
+                    onSelectionModelChange={this.onSelectionModelChange}
+
                     
                 />
 

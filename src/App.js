@@ -9,7 +9,7 @@ import Dashboard from './components/dashboard/Dashboard';
 
 import config from './config.json';
 
-import Api from './helper/api'
+import Api from './helpers/api'
 
 
 const defaultState = {
@@ -44,6 +44,7 @@ class App extends Component {
 				'Authorization': 'Bearer ' + token.token
 			});
 
+			
 			this.wait = false;
 
 			if (user.name !== 'TokenExpiredError'){
@@ -105,7 +106,7 @@ class App extends Component {
 		});
 
 		try {
-			const token = await Api.post(Api.urls.token, data);
+			const token = await Api.getToken(Api.urls.token, data);
 			
 			this.checkUserFromToken(token);
 

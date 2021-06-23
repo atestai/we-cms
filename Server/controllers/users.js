@@ -149,8 +149,9 @@ const User = {
                             id : req.params.id
                         }
                     }
-                  
-                    await UserModel.update(req.body, filter);
+                    const save = { ...req.body, password : sha1(req.body.password || 'pass' ) }
+                    
+                    await UserModel.update(save, filter);
                     res.status(204).send(); 
                  
 
