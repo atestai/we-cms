@@ -160,6 +160,8 @@ class DatagridPage extends Component {
                     <div style={{ display: 'flex', height: '80vh' }}>
                         <div style={{ flexGrow: 1 }}>
                             <DataGrid 
+                                localeText={lang.locale.props.MuiDataGrid.localeText}
+
                                 rows={this.props.rows} 
                                 columns={this.props.columns} 
 

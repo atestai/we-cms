@@ -1,4 +1,9 @@
+import {enUS, itIT } from '@material-ui/data-grid';
 import LocalizedStrings from 'react-localization';
+
+
+
+const language = 'it';
 
 const strings = new LocalizedStrings({
 
@@ -7,6 +12,7 @@ const strings = new LocalizedStrings({
 		add_element : 'Add new element', 
 
 		cancel : 'Cancel',
+		clock : 'Clock',
 
 		delete : 'Delete',
 		delete_question : 'Are you sure you want delete this element?',
@@ -14,7 +20,7 @@ const strings = new LocalizedStrings({
 		doctors : 'Doctors',
 
 
-		
+		email : 'Email',
 		edit : 'Edit',
 		errors :{
 			409 : 'Already used'
@@ -31,12 +37,16 @@ const strings = new LocalizedStrings({
 
 		ok : 'Ok',
 		
+		patient	: 'Patient',
 		patients : 'Patients',
 		
+		recents : 'Recents',
 		refresh: 'Refresh',
+		request_password : 'Request password',
 
 		search : "Search...",
-		
+		see_more : "See more",
+		send : 'Send',
 		sign_in: "Sign In",
 		
 		tests : 'Tests',
@@ -50,15 +60,14 @@ const strings = new LocalizedStrings({
 		add_element : 'Aggiuungi un nuovo elemento', 
 
 		cancel : 'Annulla',
+		clock : 'Orologio',
 
 		delete : 'Cancella',
 		delete_question : 'Vuoi cancellare l\'elemento?',
 		doctor : 'Dottore',
 		doctors : 'Dottori',
 
-		
-		
-
+		email : 'Email',
 		edit : 'Modifica',
 		errors :{
 			409 : 'Dato gia utilizzato'
@@ -76,11 +85,16 @@ const strings = new LocalizedStrings({
 
 		ok : 'Ok',
 
+		patient	: 'Paziente',
 		patients : 'Pazienti',
 
+		recents : 'Recenti',
 		refresh: 'Refresh',
+		request_password : 'Richiedi password',
 
 		search : "Cerca...",
+		see_more : "Vai alla Pagina",
+		send : 'Invia',
 		sign_in: "Accedi",
 
 		tests : 'Analisi',
@@ -92,6 +106,7 @@ const strings = new LocalizedStrings({
 });
 
 
-strings.setLanguage('en');
+strings.locale = language === 'it' ? itIT : enUS; 
+strings.setLanguage(language);
 
 export default strings

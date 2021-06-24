@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 
-import Link from '@material-ui/core/Link';
+
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 
@@ -16,10 +16,16 @@ import Container from '@material-ui/core/Container';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import serialize from 'form-serialize';
+import {Link} from "react-router-dom";
 
-import Copyright  from './helpers/Copyright';
-import lang from '../language'
+import serialize from 'form-serialize';
+import ReCAPTCHA from "react-google-recaptcha";
+
+import Copyright  from './Copyright';
+
+import config from '../../config.json'
+import lang from '../../language'
+
 
 
 
@@ -32,11 +38,8 @@ const useStyles = theme => ({
 		alignItems: 'center',
 	},
 	avatar: {
-		margin: theme.spacing(2, 0, 5),
-		// width: theme.spacing(25),
-		// height: theme.spacing(25),
-
-		// backgroundColor: theme.palette.secondary.main,
+		margin: theme.spacing(3, 0, 2, 0),
+		
 	},
 	form: {
 		width: '100%', // Fix IE 11 issue.
@@ -48,80 +51,82 @@ const useStyles = theme => ({
 });
 
 
-const Alert = props => {
-	return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 
-class SignIn extends Component {
+class ForgotPassword extends Component {
+
+	constructor(props){
+		super(props);
+
+		this.error_force_close = false;
+		this.error_open = this.props.error !== null;
+
+		this.recaptchaRef = React.createRef();
+		this.recaptchaSitekey = config.recaptchaSitekey;
+	}
 	
 
-	onSubmitAction = e =>{
+	onSubmitAction = async e =>{
 		
 		e.preventDefault();
+
 		const data = serialize(e.target, { hash: true });
-		this.props.onSignInAction(data);
+		const token = await this.recaptchaRef.current.executeAsync();
+
+		this.props.onForgotPassword({...data, 'g-recaptcha-response' : token});
 	}
 
+	onRecaptchaChange = e =>{
+		console.log(e);
+	}
 	
+
 
 	render() {
 		const {classes} = this.props;
 
-		let alert;
-
-		if (this.props.error !== null){
-			alert = (
-				<Snackbar open="true" anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
-					<Alert severity="error">
-						{lang.invalid_credentials}
-					</Alert>
-				  </Snackbar>
-			)
-		}
-		
 
 		return (
 
 			<Container component="main" maxWidth="xs">
-				{alert}
+				
+				<Snackbar
+					autoHideDuration={5000}
+					anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+					open = {this.props.error}
+					onClose={this.props.onErrorMessage}
+					>
+
+					<MuiAlert elevation={6} variant="filled" severity="error" >{lang.invalid_credentials}! </MuiAlert>
+				</Snackbar>
+				 
 
 				<CssBaseline />
 				<div className={classes.paper}>
 				
-					{/* <Avatar className={classes.avatar}  alt={this.props.title} src="/logo.png" /> */}
-					<img  alt={this.props.title} className={classes.avatar} src="/logo.png" /> 
+					<img alt={this.props.title} className={classes.avatar} src="/logo.png" /> 
 				
-					{/* <Typography component="h1" variant="h5">
-						{this.props.title}
-					</Typography> */}
 					<form onSubmit={this.onSubmitAction} className={classes.form}>
 						<TextField
 							variant="outlined"
 							margin="normal"
 							required
 							fullWidth
-							id="username"
-							label="Username"
-							name="username"
-							autoComplete="username"
+							id="email"
+							label="Email"
+							name="email"
+							type="email"
+							autoComplete="email"
 							autoFocus
 						/>
-						<TextField
-							variant="outlined"
-							margin="normal"
-							required
-							fullWidth
-							name="password"
-							label="Password"
-							type="password"
-							id="password"
-							autoComplete="current-password"
-						/>
-						{/* <FormControlLabel
-							control={<Checkbox value="remember" color="primary" />}
-							label="Remember me"
-						/> */}
+
+						<ReCAPTCHA
+								ref={this.recaptchaRef}
+								sitekey={this.recaptchaSitekey}
+								size="invisible"
+								onChange={this.onRecaptchaChange}
+							/>
+					
 						<Button
 							type="submit"
 							fullWidth
@@ -129,17 +134,14 @@ class SignIn extends Component {
 							color="primary"
 							className={classes.submit}
 						>
-								{lang.sign_in}
+								{lang.request_password}
 						</Button>
 
 						<Grid container>
 							<Grid item xs>
-								<Link href="#" variant="body2">
-									{lang.forgot_password}
+								<Link to="/" variant="body2">
+									{lang.sign_in}
 								</Link>
-							</Grid>
-							<Grid item>
-								
 							</Grid>
 						</Grid>
 					</form>
@@ -151,9 +153,7 @@ class SignIn extends Component {
 
 			</Container>
 		);
-
 	}
-
 }
 
-export default withStyles(useStyles)(SignIn);
+export default withStyles(useStyles)(ForgotPassword);

@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
 		doctor_id: {
 			type: DataTypes.BIGINT,
 			defaultValue: 0,
+			
 			validate: {
 				isPatients(value) {
 					if (this.role_id === 3 && !value ) {
@@ -78,6 +79,15 @@ module.exports = (sequelize, DataTypes) => {
 
 		tableName : 'users'
 	});
+
+
+	User.belongsTo(User, {
+		as: 'Doctor',
+		foreignKey: 'doctor_id',
+		constraints: false
+	});
+
+	//User.belongsTo(User,{foreignKey : 'doctor_id'})
 
 	return User;
 };

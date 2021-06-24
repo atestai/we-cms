@@ -20,5 +20,7 @@ app.use(express.json());
 
 app.use('/api/auth', require('./Server/controllers/auth') );
 app.use('/api/users', authorize, require('./Server/controllers/users') );
+app.use('/api/patients', authorize, require('./Server/controllers/patients') );
+
 
 app.listen(process.env.PORT || 8080);

@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 
-import {BrowserRouter as Router} from 'react-router-dom'; 
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-
-
-import SignIn from './components/SignIn';
+import SignIn from './components/helpers/SignIn';
 import Dashboard from './components/dashboard/Dashboard';
 
 import config from './config.json';
 
 import Api from './helpers/api'
+import ForgotPassword from './components/helpers/ForgotPassword';
 
 
 const defaultState = {
 	user: null,
 	token: null,
-	error: null
+	error: false
 };
 
 
@@ -26,97 +25,101 @@ class App extends Component {
 
 		this.title = config.project_name;
 		this.state = defaultState;
-		
-		const localToken = localStorage.getItem("token");
-
-		this.wait = localToken ? true : false;
-
 	}
+
 
 
 	checkUserFromToken = async token => {
 
 		try {
 
-			//this.wait = true;
-
 			const user = await Api.get(Api.urls.users_by_token, null, {
 				'Authorization': 'Bearer ' + token.token
 			});
 
-			
 			this.wait = false;
 
-			if (user.name !== 'TokenExpiredError'){
-				//console.log(user);
-
-				this.setState({
-					token,
-					user
-				});
+			if (user.name !== 'TokenExpiredError') {
+				return user;
 			}
-			else{
-				this.setState({
-					token : null,
-					user: null,
-					error : user.message || 'Error'
-				});
+			else {
+				return new Error('TokenExpiredError');
 			}
-
 
 		} catch (error) {
 			this.wait = false;
-			
-			this.setState({
-				token : null,
-				user: null,
-				error : error.message || 'Error'
-			});
+			console.log(error);
+			return new Error(error.messagge);
 		}
 	}
 
-	
-	componentDidMount() {
+
+	componentDidMount = () => {
 
 		const localToken = localStorage.getItem("token");
+		this.wait = localToken ? true : false;
 
-		if (localToken){
+
+		if (localToken) {
+
+			let token = null;
+			let user = null;
+			let error = true;
 
 			try {
-				const token = JSON.parse(localToken);
-				this.checkUserFromToken(token);
+				token = JSON.parse(localToken);
+
+				if (token !== null) {
+					user = this.checkUserFromToken(token);
+					error = false;
+					localStorage.setItem('token', JSON.stringify(token));
+				}
 
 			} catch (error) {
-				console.log(error);
-
-				this.setState({
-					token : null,
-					user: null,
-					error
-				});
+				token = null;
 			}
+
+			this.wait = false;
+			this.setState({
+				user,
+				token,
+				error
+			});
 		}
 	}
 
 
 	onSignInAction = async data => {
 
-		this.setState({
-			error: null
-		});
+		localStorage.clear();
+
+		let token = null;
+		let user = null;
+		let error = true;
 
 		try {
-			const token = await Api.getToken(Api.urls.token, data);
-			
-			this.checkUserFromToken(token);
 
-			localStorage.setItem('token', JSON.stringify(token));
+			token = await Api.getToken(Api.urls.token, data);
+
+			if (token !== null) {
+				user = this.checkUserFromToken(token);
+				error = false;
+				localStorage.setItem('token', JSON.stringify(token));
+			}
 
 		} catch (error) {
-			this.setState({
-				error
-			});
+			token = null;
 		}
+
+		this.setState({
+			user,
+			token,
+			error
+		});
+	}
+
+	onForgotPassword = async data => {
+		console.log(data);
 	}
 
 	onExitToApp = e => {
@@ -134,32 +137,53 @@ class App extends Component {
 
 		let main = <div></div>;
 
-		if (!this.wait){
+		if (!this.wait) {
+
 			if (this.state.user !== null) {
+
 				main = (
-					<Router>
+					
 					<Dashboard
 						title={this.title}
 						onExitToApp={this.onExitToApp}
-						user={this.state.user}
-						token = {this.state.token}
+						currentUser={this.state.user}
+						token={this.state.token}
 					/>
-					</Router>	
-				);
+				)
+
 			} else {
+				
 				main = (
-					<SignIn
-						title={this.title}
-						onSignInAction={this.onSignInAction}
-						error={this.state.error}
-	
-					/>
+					<Switch>
+						<Route exact path="/">
+							<SignIn
+								title={this.title}
+								onSignInAction={this.onSignInAction}
+								error={this.state.error}
+								onErrorMessage={() => this.setState({ error: false })}
+							/>
+						</Route>
+						<Route path="/forgot_password">
+							<ForgotPassword 
+								title={this.title}
+								onForgotPassword={this.onForgotPassword}
+								error={this.state.error}
+								onErrorMessage={() => this.setState({ error: false })}
+							/>
+						</Route>
+
+					</Switch>
 				);
 			}
 		}
 
-		return main 
-		
+		return (
+			<Router>
+				{main}
+			</Router>
+			
+		)
+
 	}
 }
 

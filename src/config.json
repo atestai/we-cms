@@ -1,10 +1,10 @@
 {
     "project_name" : "PKU - Smart Sensors",
 
-    "base_url" : "https://pku-smart-sensors.eu/api",
-    "__base_url" : "http://localhost:8080/api",
-    "__base_url" : "http://192.168.3.9:8080/api"
+    "__base_url" : "https://pku-smart-sensors.eu/api",
+    "base_url" : "http://localhost:8080/api",
+    "_base_url" : "http://192.168.3.9:8080/api" , 
 
-   
+    "recaptchaSitekey" : "6LeUClQbAAAAALNUZaOKN-nk0dJ-jU88T1JX-rLX"
 
 }

@@ -29,6 +29,7 @@ import Home from './Home';
 
 import lang from '../../language';
 import Doctors from '../lists/Doctors';
+import Patients from '../lists/Patients';
 
 
 const drawerWidth = 240;
@@ -119,10 +120,21 @@ class Dashboard extends Component {
 
 	constructor(props) {
 		super(props);
+
+		const {currentUser, token} = this.props;
+
 		this.state = {
 			open: true,
-			confirm_open: false
+			confirm_open: false,
+			auth : {
+				currentUser,
+				token
+			}
 		};
+	}
+
+	componentDidMount = () => {
+
 	}
 
 
@@ -183,7 +195,7 @@ class Dashboard extends Component {
 							</Badge>
 						</IconButton> */}
 
-						<IconButton color="inherit" onClick={this.onUserInfo} title={this.props.user.name} >
+						<IconButton color="inherit" onClick={this.onUserInfo} title={this.state.auth.currentUser.name} >
 							<AccountCircleIcon />
 						</IconButton>
 
@@ -192,8 +204,6 @@ class Dashboard extends Component {
 						</IconButton>
 
 						<ConfirmDialog
-
-							
 
 							title={lang.exit_to_app}
 							open={this.state.confirm_open}
@@ -218,7 +228,7 @@ class Dashboard extends Component {
 						</IconButton>
 					</div>
 					<Divider />
-					<List><Menu user={this.props.user} /></List>
+					<List><Menu user={this.state.auth.currentUser} /></List>
 					<Divider />
 
 					{/* <List>{secondaryListItems}</List> */}
@@ -229,25 +239,19 @@ class Dashboard extends Component {
 
 					<Container maxWidth={false} className={classes.container}>
 
-
 						<Switch>
-							<Route path="/dashboard">
-								<Home />
-							</Route>
+							
 							<Route exact path="/doctors">
-								<Doctors token = {this.props.token} />
-							</Route>
-							<Route exact path="/doctors/:id">
-								<Doctors />
+								<Doctors auth = {this.state.auth} />
 							</Route>
 							<Route exact path="/patients">
-								<div>patients</div>
+								<Patients  auth = {this.state.auth}  />
 							</Route>
 							<Route exact path="/tests">
 								<div>tests</div>
 							</Route>
 							<Route>
-								<Home />
+								<Home auth = {this.state.auth} />
 							</Route>
 						</Switch>
 						

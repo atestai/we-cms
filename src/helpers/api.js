@@ -19,7 +19,12 @@ const getToken = async (url = '', data = {}, header = {}) => {
         body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
 
-    return response.json();
+    if (response.status === 200){
+        return response.json();
+    }
+
+    return null;
+    
 }
 
 
@@ -99,7 +104,16 @@ const get = async (url = '', data = {}, header = {}) => {
         //body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
 
-    return response.json(); // parses JSON response into native JavaScript objects
+    if (response.status === 200){
+        return response.json(); // parses JSON response into native JavaScript objects
+    }
+    
+    if (response.status === 401){
+        throw new Error(response.statusText)
+    }
+
+    return response.status;
+    
 }
 
 
@@ -130,10 +144,12 @@ const api = {
 
     urls : {
         base_url,
-        token : base_url + '/auth/access_token',
+        token : base_url + '/auth/access_token_web',
         users_by_token : base_url + '/auth/user_by_token',
         list_doctors : base_url + '/users?role_id=2',
-        doctors : base_url + '/users'
+        list_patients : base_url + '/patients',
+        doctors : base_url + '/users',
+        patients : base_url + '/users'
     },
 
     post,

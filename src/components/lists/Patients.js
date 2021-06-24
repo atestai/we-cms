@@ -1,29 +1,36 @@
-import React, { Fragment } from 'react'
+import React, {  Fragment } from 'react'
 
 import { IconButton } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
-import Doctor from '../details/Doctor';
+
+import Patient from '../details/Patient';
 
 import lang from '../../language';
 import Api from '../../helpers/api'
+import Assessment from '@material-ui/icons/Assessment';
+import { Link } from 'react-router-dom';
 import Lists from '../core/Lists';
 
 
-
-class Doctors extends Lists {
+class Patients extends Lists {
 
     constructor(props){
         super(props);
-
-     
-
+    
         this.columns = [
-            { field: 'name', headerName: lang.name, flex: 0.33 },
-            { field: 'username', headerName: lang.username, flex: 0.33 },
-            { field: 'email', headerName: 'E-mail', flex: 0.33 },
+            { field: 'name', headerName: lang.name, flex: 0.25 },
+            { field: 'username', headerName: lang.username, flex: 0.25 },
+            { field: 'Doctor', headerName: lang.doctor, flex: 0.25, 
+                valueGetter : (params) => {
+                    if (params.row.Doctor){
+                        return params.row.Doctor.name;
+                    }
+                } 
+            },
+            { field: 'email', headerName: 'E-mail', flex: 0.25 },
             {
                 field: ' ',
                 resizable: false,
@@ -34,31 +41,47 @@ class Doctors extends Lists {
                            
                 renderCell: (params) => (
                     <div >
+
                         <IconButton 
-                            edge='start'  
+                            component={ Link } to={'/tests/' + params.id} variant="contained" 
+                            title={lang.tests}> 
+                                <Assessment style={{ color: '#00f' }} /> 
+                        </IconButton>
+
+                        <IconButton 
+                            
                             title={lang.edit} 
                             onClick={ () => this.onEditDetail(params.id) }> 
                                 <EditIcon style={{ color: 'green' }} /> 
                         </IconButton>
 
                         <IconButton 
-                            edge='end' 
+                            
                             title={lang.delete} 
-                            onClick={ () => this.onOpenDialog(true, params.id) }> 
+                            onClick={ () => this.onDeleteConfirm(true, params.id) }> 
                                 <DeleteIcon style={{ color: 'red' }} /> 
                         </IconButton>
                     </div>
                 )
             },
         ];
-
     }
 
-    
+
     onLoadData = async () => {
 
-        if (this.state.auth.token ){
-            const data = await Api.get(Api.urls.list_doctors, null, {
+        if (this.state.auth){
+
+            let url = null;
+
+            if (this.state.auth.currentUser.role_id === 2 ){
+                url = Api.urls.doctors + '/' + this.state.auth.currentUser.id + '/patients';
+            }
+            else{
+                url = Api.urls.list_patients;
+            } 
+
+            const data = await Api.get(url, null, {
                 'Authorization': 'Bearer ' + this.state.auth.token.token
             });
     
@@ -75,21 +98,29 @@ class Doctors extends Lists {
         });
     }
 
+
     
-
     onEditDetail = async id =>{
-        const user = await Api.get(Api.urls.doctors + '/' + id, {}, {
-            'Authorization': 'Bearer ' + this.state.auth.token.token
-        });
 
-        if (user !== undefined && user.name === 'TokenExpiredError'){
-            window.location.href = '/';
-        }
-        else if (user){
-            this.user = {...user};
-            this.setState({ detail_open: true})
+        try {
+            const user = await Api.get(Api.urls.patients + '/' + id, {}, {
+                'Authorization': 'Bearer ' + this.state.auth.token.token
+            });
+    
+    
+            if (user !== undefined && user.name === 'TokenExpiredError'){
+                window.location.href = '/';
+            }
+            else if (user){
+                this.user = {...user};
+                this.setState({ detail_open: true})
+            }    
+
+        } catch (error) {
+            console.log(error.message);
         }
     }
+
 
 
 
@@ -101,7 +132,7 @@ class Doctors extends Lists {
 
         if (id != null ){
 
-            if (this.state.auth ){
+            if (this.state.auth.token ){
                 const status = await Api.del(Api.urls.doctors + '/' + id , {
                     'Authorization': 'Bearer ' + this.state.auth.token.token
                 });
@@ -120,6 +151,7 @@ class Doctors extends Lists {
         }
     }
 
+    
 
 
     onMultiDeleteAction = async () =>{
@@ -138,14 +170,10 @@ class Doctors extends Lists {
         }
 
         if (refresh){
-            this.loadData();
+            this.onLoadData();
         }
     }
 
-
-    onDetailClose = () => {
-        this.setState({ detail_open: false })
-    }
 
 
     onOKDetailAction = async (data) => {
@@ -166,7 +194,7 @@ class Doctors extends Lists {
         if (status === 204 || status === 200 ){
 
             this.setState({ detail_open: false })
-            this.loadData();
+            this.onLoadData();
 
         }
         else{
@@ -177,7 +205,9 @@ class Doctors extends Lists {
 
 
     getDetailDialog = () => (
-        <Doctor
+        <Patient
+            auth = {this.state.auth}
+
             open = {this.state.detail_open}
             detailClose = {this.onDetailClose} 
             onOK = {this.onOKDetailAction}  
@@ -189,15 +219,13 @@ class Doctors extends Lists {
 
         return (        
             <Fragment>
-
-                {this.getDataGridPage(lang.doctors, '/doctors/')}
+                {this.getDataGridPage(lang.patients, '/patients/')}
                 {this.getConfirmDialog()}
                 {this.getDetailDialog()}
                 {this.getSnackbar()}
-
             </Fragment>
         )
     }
 }
 
-export default Doctors;
+export default Patients;

@@ -6,17 +6,17 @@ const jwt = require('jsonwebtoken');
 
 const authorize = require('../helpers/authorize')
 const sha1 = require('../helpers/sha1');
-
+const recaptcha = require('../helpers/recaptcha');
 const UserModel = require('../models/index').User;
 
-
-
 const router = express.Router();
+ 
 
 
 const User = {
 
     async getToken(req, res){
+
 
         const exp =  Math.floor(Date.now() / 1000) + (60 * 60);
 
@@ -74,6 +74,14 @@ const User = {
     }
 }
 
+
+router.post('/access_token_web', recaptcha.middleware.verify, (req, res) => {
+    if ( !req.recaptcha.error) {
+        User.getToken(req, res); 
+    } else {
+        res.status(401).send(req.recaptcha.error);
+    }
+});
 
 router.post('/access_token', User.getToken );
 router.post('/access_token/refresh', authorize,  User.refreshToken );

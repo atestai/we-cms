@@ -52,8 +52,32 @@ const User = {
 
                 res.json(user); 
             }
-            else {
+
+            else if ( req.user.role_id === constants.DOCTOR && req.params.id !== req.user.id.toString()){
                 
+                const count = await UserModel.count({
+                    where: { 
+                        id:req.params.id,
+                        doctor_id : req.user.id
+                    } 
+                });
+
+                if (count === 0){
+                    res.status(401).send();  
+                    return;
+                }
+
+                const user = await UserModel.findOne({
+                    where: { 
+                        id:req.params.id
+                    } 
+                });
+
+                res.json(user); 
+                
+            }
+
+            else {
                 if (req.params.id === req.user.id.toString()){
 
                     const user = await UserModel.findOne({

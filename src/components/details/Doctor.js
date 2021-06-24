@@ -6,6 +6,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import { IconButton, InputAdornment } from '@material-ui/core';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
+
 
 import serialize from 'form-serialize';
 
@@ -14,30 +17,30 @@ import { Input } from '@material-ui/core';
 
 class Doctor extends Component {
 
+    constructor(props){
+		super(props);
 
+		this.state = {
+			showPassword : false 
+		}
+	}
+
+    onClickShowPassword = e => {
+		this.setState((state) => ({showPassword: !state.showPassword}));
+	}
 
     onOKAction = e => {
         e.preventDefault();
 		const data = serialize(e.target, { hash: true });
-
         const data_to_send = { ...data, role_id : 2  }
 
-        // "name": "Paziente 5",
-        // "role_id": 3,	
-        //     "doctor_id" : 2,
-        //     "username" : "pat_5"
-
-
-        //console.log(data);
         this.props.onOK(data_to_send);
     }
 
 
     render() {
 
-
         const {id, name, username, email} = this.props.user;
-
         const password_required = id === undefined ;
 
         return (
@@ -85,9 +88,23 @@ class Doctor extends Component {
                             id="password"
                             name="password"
                             label="Password"
-                            type="password"
+                            type={this.state.showPassword ? 'text' : 'password'}
                             fullWidth
                             required={password_required}
+                            InputProps={{
+								endAdornment : (
+									<InputAdornment position="end">
+									<IconButton
+									  aria-label="toggle password visibility"
+									  onClick={this.onClickShowPassword}
+									  onMouseDown={(e) => e.preventDefault()}
+									  edge="end"
+									>
+									  {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+									</IconButton>
+								  </InputAdornment>
+								)
+							}}
                         />
 
                         <TextField
