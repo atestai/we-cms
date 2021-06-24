@@ -22,7 +22,7 @@
     "react-google-recaptcha": "^2.1.0",
     "react-localization": "^1.0.17",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^1.1.5",
+    "react-scripts": "^4.0.3",
     "recharts": "^2.0.9",
     "sequelize": "^6.6.2",
     "web-vitals": "^1.1.2"
@@ -40,11 +40,7 @@
     ]
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
