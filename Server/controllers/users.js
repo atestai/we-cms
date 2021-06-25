@@ -1,11 +1,10 @@
 const express = require('express');
 const { Op } = require("sequelize");
 
-const sha1 = require('../helpers/sha1');
+const {sha1} = require('../helpers/sha1');
 const constants = require('../helpers/constants');
 
 const UserModel = require('../models').User;
-
 
 
 const router = express.Router();
@@ -124,6 +123,30 @@ const User = {
         }
     },
 
+    async deletePatients(req, res) {
+
+        console.log('user-dletePatients');
+
+        if (req.user !== null){
+
+            if ( req.user.role !== constants.PATIENT ){
+
+                await UserModel.destroy({
+                    where: { 
+                        doctor_id : req.params.id
+                    } 
+                });
+
+                res.status(204).send();
+            }
+            else {
+                res.status(401).send();
+            }
+        }else{
+            res.status(401).send();
+        }
+    },
+
 
     async update(req, res) {
 
@@ -155,9 +178,13 @@ const User = {
             }
 
 
-            const count = req.body.username !== undefined ? await UserModel.count({
+            const count = req.body.username || req.body.email !== undefined ? await UserModel.count({
                 where: {
-                    username : req.body.username,
+                    [Op.or]: [
+                        { username: req.body.username },
+                        { email: req.body.email }
+                    ],
+
                     id : {
                         [Op.ne]: req.params.id
                     },                
@@ -205,7 +232,13 @@ const User = {
 
             const count = await UserModel.count({
                 where: {
-                    username : req.body.username,
+                    [Op.or]: [
+                        { username: req.body.username },
+                        { email: req.body.email }
+                    ]/*,
+                    id : {
+                        [Op.ne]: req.params.id
+                    }*/               
                 }
             });
 
@@ -223,7 +256,7 @@ const User = {
             }
 
             else{
-                res.status(409).json({error : 'username already used'});  
+                res.status(409).json({error : 'username or email already used'});  
             }  
         }
         else{
@@ -285,11 +318,12 @@ const User = {
 
 router.get('/', User.getAll);
 router.get('/:id', User.get);
-router.get('/:id/patients', User.getPatients);
 router.patch('/:id', User.update);
 router.post('/', User.create);
-
 router.delete('/:id', User.delete);
+
+router.get('/:id/patients', User.getPatients);
+router.delete('/:id/patients', User.deletePatients);
 
 
 module.exports = router;

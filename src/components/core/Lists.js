@@ -21,6 +21,8 @@ class Lists extends Component{
         this.rows = [];
 
         const {auth} = this.props;
+       
+
         this.state = {
             rows : this.rows.slice(),
             auth,

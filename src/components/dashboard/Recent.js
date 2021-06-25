@@ -27,6 +27,7 @@ class Recent extends Component {
 
 		const {auth} = this.props;
 
+		
 		this.columns = [
 			lang.name, 
 			lang.email
@@ -73,15 +74,17 @@ class Recent extends Component {
     
             if (data.users !== undefined ){
                 this.rows = data.users;
+				
+				this.setState({
+					rows : this.rows.slice()
+				});
             }
             else{
                 window.location.href = '/';
             }
         }
 
-        this.setState({
-            rows : this.rows.slice()
-        });
+      
 	}
 
 
@@ -111,7 +114,7 @@ class Recent extends Component {
 							<TableRow key={item.id}>
 								<TableCell>{item.name} </TableCell>
 								<TableCell>{item.email} </TableCell>
-								{this.state.auth.currentUser.role_id === 1 && (
+								{this.state.auth.currentUser.role_id === 1 && item.Doctor !== null && (
 									<TableCell>{item.Doctor.name} </TableCell>
 								)}
 							</TableRow>

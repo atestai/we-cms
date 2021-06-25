@@ -1,9 +1,6 @@
 const express = require('express');
-const { Op } = require("sequelize");
 
-const sha1 = require('../helpers/sha1');
 const constants = require('../helpers/constants');
-
 const UserModel = require('../models').User;
 
 

@@ -14,10 +14,13 @@ import Container from '@material-ui/core/Container';
 
 import MenuIcon from '@material-ui/icons/Menu';
 
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+
+import { Snackbar } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { Route, Switch } from "react-router";
 
@@ -30,6 +33,9 @@ import Home from './Home';
 import lang from '../../language';
 import Doctors from '../lists/Doctors';
 import Patients from '../lists/Patients';
+import User from '../details/User';
+import api from '../../helpers/api';
+
 
 
 const drawerWidth = 240;
@@ -126,6 +132,8 @@ class Dashboard extends Component {
 		this.state = {
 			open: true,
 			confirm_open: false,
+			error_open : false,
+			detail_current_user_open : false,
 			auth : {
 				currentUser,
 				token
@@ -133,15 +141,10 @@ class Dashboard extends Component {
 		};
 	}
 
-	componentDidMount = () => {
-
-	}
+	componentDidMount = () => {}
 
 
 	handleDrawerOpen = (e) => {
-
-		//console.log('clic');
-
 		this.setState({ open: true });
 	}
 
@@ -149,21 +152,72 @@ class Dashboard extends Component {
 		this.setState({ open: false });
 	}
 
-
-	onUserInfo = e => {
-
-	}
-
-
 	onConfirmOpen = (e = true) => {
 		this.setState({ confirm_open: e });
 	}
 
 
-	onExitToApp = e => {
+	onExitToApp = () => {
 		this.props.onExitToApp();
 	}
 
+
+	onErrorMessage = (error_open = true) => this.setState({ error_open });
+
+
+	onOKDetailCurrenteUserAction = async (data) => {
+		//console.log(data);
+
+		const status = await api.patch(api.urls.users +  '/' + data.id, data, {
+			'Authorization': 'Bearer ' + this.state.auth.token.token
+		})
+
+		if (status === 204 || status === 200 ){
+
+
+			this.setState(state => ({
+				detail_current_user_open: false,
+				auth : {
+					...state.auth,
+					currentUser : {
+						...state.auth.currentUser,
+						name : data.name,
+						email : data.email
+					}
+				}
+			}))
+  
+        }
+        else{
+            this.message = lang.errors[status];
+            this.onErrorMessage(true);
+        }     
+	}
+
+	getDetailCurrenteUserDialog = () => (
+        <User
+            open = {this.state.detail_current_user_open}
+            detailClose = {() => this.setState({detail_current_user_open:false})} 
+            onOK = {this.onOKDetailCurrenteUserAction}  
+            user = {this.state.auth.currentUser}
+        />
+    )
+
+	
+	
+	getSnackbar = () => (
+
+        <Snackbar
+            autoHideDuration={5000}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            open = {this.state.error_open}
+            onClose={this.onErrorMessage}
+            >
+
+            <MuiAlert elevation={6} variant="filled" severity="error" >{this.message}! </MuiAlert>
+
+        </Snackbar>
+    )
 
 
 	render() {
@@ -173,6 +227,8 @@ class Dashboard extends Component {
 
 		return (
 			<div className={classes.root}>
+				{this.getDetailCurrenteUserDialog()}
+				{this.getSnackbar()}
 				<CssBaseline />
 				<AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
 					<Toolbar className={classes.toolbar}>
@@ -195,7 +251,7 @@ class Dashboard extends Component {
 							</Badge>
 						</IconButton> */}
 
-						<IconButton color="inherit" onClick={this.onUserInfo} title={this.state.auth.currentUser.name} >
+						<IconButton color="inherit" onClick={() => this.setState({detail_current_user_open:true})} title={this.state.auth.currentUser.name} >
 							<AccountCircleIcon />
 						</IconButton>
 

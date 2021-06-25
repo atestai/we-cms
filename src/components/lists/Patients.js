@@ -21,16 +21,17 @@ class Patients extends Lists {
         super(props);
     
         this.columns = [
-            { field: 'name', headerName: lang.name, flex: 0.25 },
-            { field: 'username', headerName: lang.username, flex: 0.25 },
-            { field: 'Doctor', headerName: lang.doctor, flex: 0.25, 
+            { field: 'id', headerName: 'ID', flex: 0.10 },
+            { field: 'name', headerName: lang.name, flex: 0.30 },
+            { field: 'username', headerName: lang.username, flex: 0.20 },
+            { field: 'Doctor', headerName: lang.doctor, flex: 0.20, 
                 valueGetter : (params) => {
                     if (params.row.Doctor){
                         return params.row.Doctor.name;
                     }
                 } 
             },
-            { field: 'email', headerName: 'E-mail', flex: 0.25 },
+            { field: 'email', headerName: 'E-mail', flex: 0.20 },
             {
                 field: ' ',
                 resizable: false,
@@ -207,7 +208,6 @@ class Patients extends Lists {
     getDetailDialog = () => (
         <Patient
             auth = {this.state.auth}
-
             open = {this.state.detail_open}
             detailClose = {this.onDetailClose} 
             onOK = {this.onOKDetailAction}  

@@ -9,12 +9,14 @@ import config from './config.json';
 
 import Api from './helpers/api'
 import ForgotPassword from './components/helpers/ForgotPassword';
+import lang from './language';
 
 
 const defaultState = {
 	user: null,
 	token: null,
-	error: false
+	error: false,
+	forgot_message : null
 };
 
 
@@ -37,24 +39,23 @@ class App extends Component {
 				'Authorization': 'Bearer ' + token.token
 			});
 
-			this.wait = false;
-
-			if (user.name !== 'TokenExpiredError') {
+			if (user !== 401 && user.name !== 'TokenExpiredError') {
 				return user;
 			}
 			else {
-				return new Error('TokenExpiredError');
+				return null
 			}
 
 		} catch (error) {
+			return null;
+		}
+		finally{
 			this.wait = false;
-			console.log(error);
-			return new Error(error.messagge);
 		}
 	}
 
 
-	componentDidMount = () => {
+	componentDidMount = async () => {
 
 		const localToken = localStorage.getItem("token");
 		this.wait = localToken ? true : false;
@@ -70,13 +71,23 @@ class App extends Component {
 				token = JSON.parse(localToken);
 
 				if (token !== null) {
-					user = this.checkUserFromToken(token);
-					error = false;
-					localStorage.setItem('token', JSON.stringify(token));
+					user = await this.checkUserFromToken(token);
+
+					if (user){
+						error = false;
+						localStorage.setItem('token', JSON.stringify(token));
+					}
+					else{
+						localStorage.clear();
+					}
+				}
+				else{
+					localStorage.clear();
 				}
 
 			} catch (error) {
 				token = null;
+				localStorage.clear();
 			}
 
 			this.wait = false;
@@ -102,7 +113,7 @@ class App extends Component {
 			token = await Api.getToken(Api.urls.token, data);
 
 			if (token !== null) {
-				user = this.checkUserFromToken(token);
+				user = await this.checkUserFromToken(token);
 				error = false;
 				localStorage.setItem('token', JSON.stringify(token));
 			}
@@ -119,7 +130,25 @@ class App extends Component {
 	}
 
 	onForgotPassword = async data => {
-		console.log(data);
+		
+		try {
+			const status = await Api.forgotPassword(Api.urls.forgot_password, data);
+
+			this.setState({ 
+				forgot_message: {
+					severity : status === 202 ? 'success' : 'error',
+					text : status === 202 ? lang.reset_password_success : lang.reset_password_error
+				}
+			});
+
+		} catch (error) {
+			this.setState({ 
+				forgot_message: {
+					severity : 'error',
+					text : lang.reset_password_error
+				}
+			});
+		}
 	}
 
 	onExitToApp = e => {
@@ -167,8 +196,8 @@ class App extends Component {
 							<ForgotPassword 
 								title={this.title}
 								onForgotPassword={this.onForgotPassword}
-								error={this.state.error}
-								onErrorMessage={() => this.setState({ error: false })}
+								messagge={this.state.forgot_message}
+								onErrorMessage={() => this.setState({ forgot_message: null })}
 							/>
 						</Route>
 

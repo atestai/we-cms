@@ -91,6 +91,12 @@ class DatagridPage extends Component {
         }
     }
 
+    componentDidMount = () => {
+
+        
+    }
+
+
     onConfirmDialog = ( open ) =>{
         this.setState({ delete_confirm_open: open });
     }
@@ -157,9 +163,10 @@ class DatagridPage extends Component {
 
                     </div>
 
-                    <div style={{ display: 'flex', height: '80vh' }}>
+                    <div style={{ display: 'flex', height: '80vh', minWidth: 900}}>
                         <div style={{ flexGrow: 1 }}>
                             <DataGrid 
+
                                 localeText={lang.locale.props.MuiDataGrid.localeText}
 
                                 rows={this.props.rows} 

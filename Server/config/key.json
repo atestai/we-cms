@@ -1,5 +1,16 @@
 {
+    "base_url" : "https://pku-smart-sensors.eu",
     "key" : "MIIBOgIBAAJBAJPn6UhROHf4bSm+7Pjd5lnRY/VhTIeAr6UfXuW1+YsvE1Z4GjgmOxseR/Njeetik3OrivlpOaUDUWsvyPILx/cCAwEAAQJAIdRzqVTag6ZQ4bGH5kxq+bRJFsEQjhXDFxOb0xLSZyEdqIbIzNn0Zf0EYqNRkG86OQeFjHKDexe2oBuAyLH/YQIhANxhREUy2Vp+bP6n5Wuhg1J6F3v7HiSwmfBjn6k2Z37PAiEAq8/cvtwPnTkaclJ/3NWxk2xhomCgraOlbiYHLUogrlkCIEGpvZS8tORwvPsXfZUXN7CwbiTjyrR15jgpBt59NlMjAiEAj+sJXPLXPXrk1ViX9HMoUXZa/np0fZ7z5yWBo4VRhNkCIHdG9FL4yZTpYXJdTzSNOGvQe1SOWMesxWBuBVLFGYOD",
     "recaptcha_key" : "6LeUClQbAAAAALNUZaOKN-nk0dJ-jU88T1JX-rLX",
-    "recaptcha_secret" : "6LeUClQbAAAAADQBJxpShaPVj6gvqqpzUWj4NsAr"
+    "recaptcha_secret" : "6LeUClQbAAAAADQBJxpShaPVj6gvqqpzUWj4NsAr",
+
+    "nodemailer_config" : {
+        "host" : "smtps.aruba.it",
+        "port" : "465",
+        "secure": "true",
+        "auth" :{
+            "user" : "noreply@pku-smart-sensors.eu",
+            "pass" : "S3f4Uw4axk7aSj1"
+        }  
+    }
 }

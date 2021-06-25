@@ -18,19 +18,18 @@ class Doctors extends Lists {
     constructor(props){
         super(props);
 
-     
-
         this.columns = [
-            { field: 'name', headerName: lang.name, flex: 0.33 },
-            { field: 'username', headerName: lang.username, flex: 0.33 },
-            { field: 'email', headerName: 'E-mail', flex: 0.33 },
+            { field: 'id', headerName: 'ID', flex: 0.10 },
+            { field: 'name', headerName: lang.name, flex: 0.40 },
+            { field: 'username', headerName: lang.username, flex: 0.20 },
+            { field: 'email', headerName: 'E-mail', flex: 0.30 },
             {
                 field: ' ',
                 resizable: false,
                 sortable: false,
                 disableColumnMenu: true,
                 align : 'right',
-                width: 150,
+               
                            
                 renderCell: (params) => (
                     <div >
@@ -44,7 +43,7 @@ class Doctors extends Lists {
                         <IconButton 
                             edge='end' 
                             title={lang.delete} 
-                            onClick={ () => this.onOpenDialog(true, params.id) }> 
+                            onClick={ () => this.onDeleteConfirm(true, params.id) }> 
                                 <DeleteIcon style={{ color: 'red' }} /> 
                         </IconButton>
                     </div>
@@ -107,6 +106,12 @@ class Doctors extends Lists {
                 });
 
                 if (status){
+
+                    await Api.del(Api.urls.doctors + '/' + id  + '/patients', {
+                        'Authorization': 'Bearer ' + this.state.auth.token.token
+                    });
+
+
                     this.setState((state, props) => ({
                         rows: state.rows.filter( item => item.id !== id)
                     }));
@@ -138,7 +143,7 @@ class Doctors extends Lists {
         }
 
         if (refresh){
-            this.loadData();
+            this.onLoadData();
         }
     }
 
@@ -164,10 +169,8 @@ class Doctors extends Lists {
         }
 
         if (status === 204 || status === 200 ){
-
             this.setState({ detail_open: false })
-            this.loadData();
-
+            this.onLoadData();
         }
         else{
             this.message = lang.errors[status];

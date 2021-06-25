@@ -25,7 +25,6 @@ class Patient extends Component {
         };
     }
 
-
     componentDidMount = () => {
         this.onLoadData();
     }
@@ -37,7 +36,7 @@ class Patient extends Component {
 
 
     onLoadData = async () => {
-
+    
         if (this.state.auth && this.state.auth.currentUser.role_id === 1){
 
             const data = await Api.get(Api.urls.list_doctors, null, {
@@ -179,6 +178,7 @@ class Patient extends Component {
                             name="email"
                             label="Email Address"
                             type="email"
+                            required
                             fullWidth
                             defaultValue={email}
                         />

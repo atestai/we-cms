@@ -15,7 +15,7 @@ import serialize from 'form-serialize';
 import lang from '../../language';
 import { Input } from '@material-ui/core';
 
-class Doctor extends Component {
+class User extends Component {
 
     constructor(props){
 		super(props);
@@ -32,9 +32,7 @@ class Doctor extends Component {
     onOKAction = e => {
         e.preventDefault();
 		const data = serialize(e.target, { hash: true });
-        const data_to_send = { ...data, role_id : 2  }
-
-        this.props.onOK(data_to_send);
+        this.props.onOK(data);
     }
 
 
@@ -55,7 +53,7 @@ class Doctor extends Component {
 
                 <form onSubmit={this.onOKAction}>
 
-                    <DialogTitle id="form-dialog-title">{lang.doctor}</DialogTitle>
+                    <DialogTitle id="form-dialog-title">{lang.user}</DialogTitle>
                     <Input name="id" value={id} type="hidden" />
 
                     <DialogContent>
@@ -79,8 +77,8 @@ class Doctor extends Component {
                             label="Username"
                             type="text"
                             fullWidth
-                            required
-                            defaultValue = {username}
+                            aria-readonly
+                            value = {username}
                         />
 
                         <TextField
@@ -113,7 +111,6 @@ class Doctor extends Component {
                             name="email"
                             label="Email Address"
                             type="email"
-                            required
                             fullWidth
                             defaultValue = {email}
                         />
@@ -133,5 +130,4 @@ class Doctor extends Component {
     }
 }
 
-
-export default Doctor
+export default User

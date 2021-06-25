@@ -77,7 +77,7 @@ class ForgotPassword extends Component {
 	}
 
 	onRecaptchaChange = e =>{
-		console.log(e);
+		//console.log(e);
 	}
 	
 
@@ -93,11 +93,16 @@ class ForgotPassword extends Component {
 				<Snackbar
 					autoHideDuration={5000}
 					anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-					open = {this.props.error}
+					open = {this.props.messagge !== null}
 					onClose={this.props.onErrorMessage}
 					>
 
-					<MuiAlert elevation={6} variant="filled" severity="error" >{lang.invalid_credentials}! </MuiAlert>
+					<MuiAlert 
+						elevation={6} 
+						variant="filled" 
+						severity={this.props.messagge ? this.props.messagge.severity : 'success'} >
+							{this.props.messagge ? this.props.messagge.text : ''} 
+						</MuiAlert>
 				</Snackbar>
 				 
 
