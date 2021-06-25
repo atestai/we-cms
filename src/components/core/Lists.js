@@ -142,10 +142,7 @@ class Lists extends Component{
 
     onSelectionModelChange = (e) => {
         const selectedIDs = new Set(e.selectionModel);
-
-        this.selectedRowData = this.rows.filter((row) =>
-          selectedIDs.has(row.id)
-        );
+        this.selectedRowData = this.rows.filter(row =>selectedIDs.has(row.id));
     }
 }
 

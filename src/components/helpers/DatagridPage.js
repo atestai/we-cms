@@ -87,13 +87,22 @@ class DatagridPage extends Component {
         super(props);
 
         this.state = {
-            delete_confirm_open : false
+            delete_confirm_open : false,
+            selection_size : 0 
         }
     }
 
     componentDidMount = () => {
 
         
+    }
+
+    onSelectionModelChange = e => {
+      
+        //console.log();
+        this.setState({selection_size : new Set(e.selectionModel).size});
+
+        this.props.onSelectionModelChange(e)
     }
 
 
@@ -141,10 +150,12 @@ class DatagridPage extends Component {
                                 <AddCircleIcon />
                             </IconButton>
 
-
-                            <IconButton onClick={ () => this.onConfirmDialog(true)} color="inherit" title={lang.delete}>
-                                <DeleteIcon />
-                            </IconButton>
+                            {this.state.selection_size !== 0 && (
+                                <IconButton onClick={ () => this.onConfirmDialog(true)} color="inherit" title={lang.delete}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            )}
+                            
 
                             <ConfirmDialog
                                 title={lang.delete}
@@ -180,7 +191,8 @@ class DatagridPage extends Component {
 
                                 pagination
 
-                                onSelectionModelChange = {this.props.onSelectionModelChange}
+                               
+                                onSelectionModelChange = {this.onSelectionModelChange}
                                 
                                 />
                         </div>
