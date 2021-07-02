@@ -64,27 +64,27 @@ class Recent extends Component {
             if (this.state.auth.currentUser.role_id === 2 ){
                 url = Api.urls.doctors + '/' + this.state.auth.currentUser.id + '/patients';
             }
-            else{
+            else if (this.state.auth.currentUser.role_id === 1 ){
                 url = Api.urls.list_patients;
             } 
 
-            const data = await Api.get(url, null, {
-                'Authorization': 'Bearer ' + this.state.auth.token.token
-            });
-    
-            if (data.users !== undefined ){
-                this.rows = data.users;
-				
-				this.setState({
-					rows : this.rows.slice()
+			if (url){
+				const data = await Api.get(url, null, {
+					'Authorization': 'Bearer ' + this.state.auth.token.token
 				});
-            }
-            else{
-                window.location.href = '/';
-            }
+		
+				if (data.users !== undefined ){
+					this.rows = data.users;
+					
+					this.setState({
+						rows : this.rows.slice()
+					});
+				}
+				else{
+					window.location.href = '/';
+				}
+			}
         }
-
-      
 	}
 
 

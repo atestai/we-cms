@@ -75,7 +75,6 @@ const useStyles = theme => ({
             },
         },
     }
-
 });
 
 
@@ -93,7 +92,6 @@ class DatagridPage extends Component {
     }
 
     componentDidMount = () => {
-
         
     }
 
@@ -162,7 +160,6 @@ class DatagridPage extends Component {
                                 open={this.state.delete_confirm_open}
                                 setOpen={this.onConfirmDialog}
                                 onConfirm={this.props.onDelete}>
-                            
                                 {lang.delete_question}
                             </ConfirmDialog>
 
@@ -171,7 +168,6 @@ class DatagridPage extends Component {
                             </IconButton>
 
                         </Toolbar>
-
                     </div>
 
                     <div style={{ display: 'flex', height: '80vh', minWidth: 900}}>
