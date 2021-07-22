@@ -26,6 +26,7 @@ const useStyles = theme => ({
 
     root: {
         flexGrow: 1,
+        minWidth: 900
     },
 
     menuButton: {

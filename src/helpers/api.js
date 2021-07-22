@@ -1,9 +1,23 @@
 const base_url = window.location.protocol + "//" + window.location.hostname + (window.location.hostname === 'localhost' ? ':8080' : '') + '/api';
 
-const getToken = async (url = '', data = {}, header = {}) => {
-    // Default options are marked with *
 
-    const response = await fetch(url, {
+const urls = {
+    base_url,
+    token : base_url + '/auth/login',
+    forgot_password : base_url + '/auth/password_reset',
+    users_by_token : base_url + '/auth/user_by_token',
+    list_doctors : base_url + '/users?role_id=2',
+    list_patients : base_url + '/patients',
+    doctors : base_url + '/users',
+    patients : base_url + '/users',
+    users : base_url + '/users',
+};
+
+
+const getToken = async (data = {}, header = {}) => {
+    
+
+    const response = await fetch(urls.token, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -20,7 +34,7 @@ const getToken = async (url = '', data = {}, header = {}) => {
         return response.json();
     }
 
-    console.log(response);
+    //console.log(response);
 
     return null;
     
@@ -162,17 +176,7 @@ const forgotPassword = async (url = '', data = {}, header = {}) => {
 
 const api = {
 
-    urls : {
-        base_url,
-        token : base_url + '/auth/login',
-        forgot_password : base_url + '/auth/password_reset',
-        users_by_token : base_url + '/auth/user_by_token',
-        list_doctors : base_url + '/users?role_id=2',
-        list_patients : base_url + '/patients',
-        doctors : base_url + '/users',
-        patients : base_url + '/users',
-        users : base_url + '/users',
-    },
+    urls,
 
     post,
     get,

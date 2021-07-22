@@ -94,7 +94,7 @@ class SignIn extends Component {
 					onClose={this.props.onErrorMessage}
 					>
 
-					<MuiAlert elevation={6} variant="filled" severity="error" >{lang.invalid_credentials}! </MuiAlert>
+					<MuiAlert elevation={6} variant="filled" severity="error" >{this.props.errorMsg ? this.props.errorMsg : lang.invalid_credentials}! </MuiAlert>
 				</Snackbar>
 				 
 				 

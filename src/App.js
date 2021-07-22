@@ -2,14 +2,19 @@ import React, { Component } from 'react';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
+import CryptoJS  from 'crypto-js';
+
+
 import SignIn from './components/helpers/SignIn';
 import Dashboard from './components/dashboard/Dashboard';
 
 import config from './config.json';
-
 import Api from './helpers/api'
+
+
 import ForgotPassword from './components/helpers/ForgotPassword';
 import lang from './language';
+
 
 
 const defaultState = {
@@ -27,6 +32,9 @@ class App extends Component {
 
 		this.title = config.project_name;
 		this.state = defaultState;
+
+		this.errorMsg = '';
+
 	}
 
 
@@ -57,15 +65,34 @@ class App extends Component {
 
 	componentDidMount = async () => {
 
-		const localToken = localStorage.getItem("token");
+		//localStorage.clear();
+		let token = null;
+		let user = null;
+		let error = true;
+
+
+		const ciphertext = localStorage.getItem("token");
+
+		if ( ciphertext === null ) {
+			
+			localStorage.clear();
+			this.wait = false;
+			this.setState({
+				user,
+				token,
+				error
+			});
+
+			return ;
+		}
+
+		const bytes  = CryptoJS.AES.decrypt(ciphertext, config.recaptchaSitekey);
+		const localToken = bytes.toString(CryptoJS.enc.Utf8);
+
 		this.wait = localToken ? true : false;
 
 
 		if (localToken) {
-
-			let token = null;
-			let user = null;
-			let error = true;
 
 			try {
 				token = JSON.parse(localToken);
@@ -75,7 +102,11 @@ class App extends Component {
 
 					if (user){
 						error = false;
-						localStorage.setItem('token', JSON.stringify(token));
+
+						const message = JSON.stringify(token);
+						const ciphertext = CryptoJS.AES.encrypt(message, config.recaptchaSitekey).toString();
+
+						localStorage.setItem('token', ciphertext);
 					}
 					else{
 						localStorage.clear();
@@ -108,18 +139,25 @@ class App extends Component {
 		let user = null;
 		let error = true;
 
+		//console.log(data);
+
 		try {
 
-			token = await Api.getToken(Api.urls.token, data);
+			token = await Api.getToken(data);
 
 			if (token !== null) {
 				user = await this.checkUserFromToken(token);
 				error = false;
-				localStorage.setItem('token', JSON.stringify(token));
+
+				const message = JSON.stringify(token);
+				const ciphertext = CryptoJS.AES.encrypt(message, config.recaptchaSitekey).toString();
+
+				localStorage.setItem('token', ciphertext );
 			}
 
 		} catch (error) {
 			token = null;
+			this.errorMsg = error.message;
 		}
 
 		this.setState({
@@ -161,7 +199,6 @@ class App extends Component {
 		window.location.href = '/';
 	}
 
-
 	render() {
 
 		let main = <div></div>;
@@ -189,6 +226,7 @@ class App extends Component {
 								title={this.title}
 								onSignInAction={this.onSignInAction}
 								error={this.state.error}
+								errorMsg={this.errorMsg}
 								onErrorMessage={() => this.setState({ error: false })}
 							/>
 						</Route>
@@ -200,7 +238,6 @@ class App extends Component {
 								onErrorMessage={() => this.setState({ forgot_message: null })}
 							/>
 						</Route>
-
 					</Switch>
 				);
 			}
