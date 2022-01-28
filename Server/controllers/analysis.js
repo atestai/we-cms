@@ -19,3 +19,5 @@ const Analysis = {
 }
 
 router.post('/', Analysis.create);
+
+module.exports = router;
