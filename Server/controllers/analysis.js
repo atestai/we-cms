@@ -18,6 +18,13 @@ const Analysis = {
     }
 }
 
-router.post('/', Analysis.create);
+router.get('/', (req, res ) => {
+    
+    res.json({
+        'user-create' : 'user-create'
+    });
+});
 
+
+router.post('/', Analysis.create);
 module.exports = router;
